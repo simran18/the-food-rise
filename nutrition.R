@@ -56,15 +56,13 @@ plot.d <- plot_ly(pyramid.data, y = ~LocationAbbr, x = ~Data_Value,
          yaxis = list(title = "US States"), barmode = "group", height = 600, autosize = F, width = 1000)
 
 
-plot.d <- ggplot(nutr.data, aes(x = LocationDesc, y = Data_Value, fill = Class)) + 
+plot.e <- ggplot(nutr.data, aes(x = LocationDesc, y = Data_Value, fill = Class)) + 
   geom_bar(subset = .(Class == "Obesity / Weight Status"), stat = "identity") + 
   geom_bar(subset = .(Class == "Physical Activity"), stat = "identity") + 
   scale_y_continuous(breaks = seq(-45, 45, 5)) +
   coord_flip() + 
   scale_fill_brewer(palette = "Set1") + 
   theme_bw()
-
-
 
 # conduct analysis about states
 # highest obesity
@@ -78,6 +76,12 @@ high.pa <- nutr.2016[which.max(nutr.2016$PhysicalActivity),]$StateFull
 
 # lowest physical activity
 low.pa <- nutr.2016[which.min(nutr.2016$PhysicalActivity),]$StateFull
+
+# average pa 
+mean.pa <- mean(nutr.2016$PhysicalActivity)
+
+# average pa 
+mean.ob <- mean(nutr.2016$Obesity) 
 
 # priority states (check values of unhealthy)
 prior.data <- filter(nutr.2016, Obesity >= 32 | PhysicalActivity <= 19)
@@ -108,6 +112,7 @@ indepth.plot <- function(State, Class, Year, Type) {
                          Class == Class & StratificationCategory1 == Type) %>%  
                   select("Stratification1", "Data_Value") 
   plot.out <- plot_ly(indepth.data, labels = ~Stratification1, values = ~Data_Value, type = 'pie') %>% 
+    add_pie(hole = 0.6) %>% 
     layout(title = ~paste("Percentage Distribution of", Class,"in", State, "by", Type, "in", Year),
            xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
            yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
