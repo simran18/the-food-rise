@@ -1,0 +1,7 @@
+require(plotly)||install.packages("plotly")
+library(plotly)
+require(dplyr)||install.packages("dplyr")
+library(dplyr)
+require(shinythemes)||install.packages("shinythemes")
+library(shinythemes)
+#source("analysis.R")
