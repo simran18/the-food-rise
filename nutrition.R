@@ -3,7 +3,7 @@ library(dplyr)
 library(tidyr)
 library(plyr)
 library(ggplot2)
-library(readxl)
+
 obes.pa.data <- read.csv("data/Physical_Activity_Obesity.csv", stringsAsFactors = F)
 obes.pa.data <- obes.pa.data[which(obes.pa.data$Class != "Fruits and Vegetables"),]
 
