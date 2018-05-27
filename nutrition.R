@@ -3,8 +3,8 @@ library(dplyr)
 library(tidyr)
 library(plyr)
 library(ggplot2)
+library(readxl)
 obes.pa.data <- read.csv("data/Physical_Activity_Obesity.csv", stringsAsFactors = F)
-
 obes.pa.data <- obes.pa.data[which(obes.pa.data$Class != "Fruits and Vegetables"),]
 
 # bubble plot with size = obesity and color = physical activity 
@@ -112,11 +112,11 @@ indepth.plot <- function(State, Class, Year, Type) {
                          Class == Class & StratificationCategory1 == Type) %>%  
                   select("Stratification1", "Data_Value") 
   plot.out <- plot_ly(indepth.data, labels = ~Stratification1, values = ~Data_Value, type = 'pie') %>% 
-    add_pie(hole = 0.6) %>% 
-    layout(title = ~paste("Percentage Distribution of", Class,"in", State, "by", Type, "in", Year),
-           xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-           yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-           showlegend = T)
+              add_pie(hole = 0.6) %>% 
+              layout(title = ~paste("Percentage Distribution of", Class,"in", State, "by", Type, "in", Year),
+                     xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                     yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                     showlegend = T)
   
   return(plot.out)
 }
