@@ -4,7 +4,7 @@ require(dplyr)||install.packages("dplyr")
 library(dplyr)
 require(shinythemes)||install.packages("shinythemes")
 library(shinythemes)
-source("readData.R")
+source("kmeans.R")
 
 
 

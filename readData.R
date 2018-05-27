@@ -26,7 +26,7 @@ activity <- read.csv("./data/Physical_Activity_Obesity.csv")
 #"Percent of adults aged 18 years and older who have obesity"
 state_overall_obesity <- activity%>%
   filter(LocationAbbr != "US",Class == "Obesity / Weight Status",StratificationID1 == "OVERALL",Question == "Percent of adults aged 18 years and older who have obesity")%>%
-  select(YearEnd,LocationDesc,Data_Value,GeoLocation)%>%
+  select(YearEnd,LocationAbbr,LocationDesc,Data_Value,GeoLocation)%>%
   spread(YearEnd,Data_Value)
 
 #State Level Physical Activity Data from 2011,2013 and 2015
@@ -34,7 +34,7 @@ state_overall_obesity <- activity%>%
 
 state_overall_activity <- activity%>%
   filter(LocationAbbr != "US",Class == "Physical Activity",StratificationID1 == "OVERALL",Question == "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity and engage in muscle-strengthening activities on 2 or more days a week")%>%
-  select(YearEnd,LocationDesc,Data_Value,GeoLocation)%>%
+  select(YearEnd,LocationAbbr,LocationDesc,Data_Value,GeoLocation)%>%
   spread(YearEnd,Data_Value)
 
 #ACCESIBILITY
@@ -54,4 +54,39 @@ county_farmer_access <- access_data2%>%
   select(FIPS,State,County,FMRKTPTH09,FMRKTPTH16)
 colnames(county_farmer_access)<- c("FIPS","State","County","2009","2016")
 
+# DATA PREP FOR K MEANS
 
+#Access data prep
+tmpfarmaccess <- county_farmer_access%>%
+  group_by(State)%>%
+  summarize(farmacc = mean(`2016`))
+tmplowaccess <- county_low_access%>%
+  group_by(State)%>%
+  summarize(lowacc = mean(`2015`))
+
+finalaccess <- left_join(tmpfarmaccess,tmplowaccess,by='State')
+
+#Activity Data prep
+tmpactivity <- state_overall_activity%>%
+  select(LocationAbbr,`2015`)
+colnames(tmpactivity) <- c("LocationAbbr",'activity')
+
+tmpobesity <- state_overall_obesity%>%
+  select(LocationAbbr,LocationDesc,`2016`)
+colnames(tmpobesity) <- c("LocationAbbr","LocationDesc",'obesityval')
+
+finalactivity <- left_join(tmpobesity,tmpactivity,by = "LocationAbbr")
+
+#Exp Data Prep
+tmpexp <- exp_data%>%select(c('Loc','Food Services'))
+
+#combining all datasets together 
+finalcombined <- left_join(finalactivity,tmpexp,by = c('LocationDesc' = 'Loc'))%>%
+  na.omit()
+finalcombined <- left_join(finalcombined,finalaccess,by = c('LocationAbbr' = 'State'))%>%
+  na.omit()
+finalcombined$`Food Services` <- as.numeric(finalcombined$`Food Services`)
+
+#Final Number of States in Analysis is 39
+#STATES EXCLUDED DUE TO MISSING DATA - 
+#Georgia, Illinois, Indiana, Kentucky, Michigan, Mississippi, North Carolina, South Dakota, Tennessee, Texas, Virginia, Wisconsin

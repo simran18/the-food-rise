@@ -9,4 +9,20 @@ shinyServer(function(input, output) {
         alt = "Venn"
       ))
     }, deleteFile = FALSE)
+  
+  output$heatmap <- renderPlot({
+    states_heatmap()
+  })
+  
+  output$diffk <- renderPlot({
+    diff_k()
+  })
+
+  output$km <- renderPlot({
+    interactive_kmeans(input$k)
+  })
+  
+  output$final_result <- renderPlot({
+    final_kmeans()
+  })
 })
