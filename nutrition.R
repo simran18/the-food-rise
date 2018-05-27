@@ -12,29 +12,11 @@ nutr.data <- filter(obes.pa.data, YearStart == 2016 &
                                 LocationDesc != "National" & Total == "Total" & QuestionID != "Q037") %>%
              select(c("LocationAbbr", "LocationDesc", "Class", "Data_Value"))  
 
-
-plot.a <- plot_ly(nutr.data, x = ~LocationAbbr, y = ~Data_Value, type = 'scatter', 
-                  mode = 'markers', color = ~Class, colors = "Set1") %>%
-  layout(title = '2016 Nutritional Index of Each State <br> (Hover for exact value)',
-         yaxis = list(title = "Percentage", showgrid = FALSE),
-         xaxis = list(title = "US States", showgrid = FALSE, tickangle = 45),
-         showlegend = T)
-
 nutr.2016 <- spread(data = nutr.data, key = Class, value = Data_Value)
 
 colnames(nutr.2016) <- c("State", "StateFull", "Obesity", "PhysicalActivity")
 
-plot.b <- plot_ly(nutr.2016, x = ~Obesity, y = ~PhysicalActivity, 
-                  text = ~paste(State, paste("Obesity", Obesity, "%"), 
-                                paste("Physical Activity", PhysicalActivity, "%"), sep = "<br />"),
-                  hoverinfo = "text", sizes = c(1, 50),
-                  type = 'scatter', mode = 'markers',
-                  marker = list(opacity = 0.5)) %>%
-  layout(title = '2016 Nutritional Index of Each State <br> (Hover for state)',
-         xaxis = list(showgrid = FALSE),
-         yaxis = list(showgrid = FALSE),
-         showlegend = F)
-
+# compatrison between states
 plot.c <- plot_ly(nutr.2016, y = ~State, x = ~Obesity, 
                   type = 'bar', name = 'Obesity', 
                   marker = list(color = 'rgba(246, 78, 139, 0.6)'), orientation = "h") %>%
@@ -43,19 +25,8 @@ plot.c <- plot_ly(nutr.2016, y = ~State, x = ~Obesity,
   layout(xaxis = list(title = "Percentage Value"), 
          yaxis = list(title = "US States"), barmode = 'stack')
 
-pyramid.data <- nutr.data
-for (i in 1:nrow(pyramid.data)) {
-  if(pyramid.data$Class[i] == "Obesity / Weight Status") {
-    pyramid.data$Data_Value[i] <- pyramid.data$Data_Value[i] * -1
-  }
-}
 
-plot.d <- plot_ly(pyramid.data, y = ~LocationAbbr, x = ~Data_Value, 
-                  type = 'bar', orientation = "h", group = ~Class, color = ~Class) %>%
-  layout(xaxis = list(title = "Percentage Value"), 
-         yaxis = list(title = "US States"), barmode = "group", height = 600, autosize = F, width = 1000)
-
-
+#put on report - fix labels 
 plot.e <- ggplot(nutr.data, aes(x = LocationDesc, y = Data_Value, fill = Class)) + 
   geom_bar(subset = .(Class == "Obesity / Weight Status"), stat = "identity") + 
   geom_bar(subset = .(Class == "Physical Activity"), stat = "identity") + 
@@ -84,7 +55,7 @@ mean.pa <- mean(nutr.2016$PhysicalActivity)
 mean.ob <- mean(nutr.2016$Obesity) 
 
 # priority states (check values of unhealthy)
-prior.data <- filter(nutr.2016, Obesity >= 32 | PhysicalActivity <= 19)
+prior.data <- filter(nutr.2016, Obesity >= 34 | PhysicalActivity <= 17)
 
 # indepth analysis - select function - only for priority or all?
 # show trend over the years from 2011 - 2016 by selecting state
@@ -112,7 +83,6 @@ indepth.plot <- function(State, Class, Year, Type) {
                          Class == Class & StratificationCategory1 == Type) %>%  
                   select("Stratification1", "Data_Value") 
   plot.out <- plot_ly(indepth.data, labels = ~Stratification1, values = ~Data_Value, type = 'pie') %>% 
-              add_pie(hole = 0.6) %>% 
               layout(title = ~paste("Percentage Distribution of", Class,"in", State, "by", Type, "in", Year),
                      xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
                      yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
