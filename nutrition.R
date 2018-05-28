@@ -12,6 +12,8 @@ nutr.data <- filter(obes.pa.data, YearStart == 2016 &
                                 LocationDesc != "National" & Total == "Total" & QuestionID != "Q037") %>%
              select(c("LocationAbbr", "LocationDesc", "Class", "Data_Value"))  
 
+nutr.data <- filter(nutr.data, LocationAbbr != "PR" & LocationAbbr != "GU" & LocationAbbr != "VI")
+
 nutr.2016 <- spread(data = nutr.data, key = Class, value = Data_Value)
 
 colnames(nutr.2016) <- c("State", "StateFull", "Obesity", "PhysicalActivity")
@@ -26,7 +28,7 @@ plot.c <- plot_ly(nutr.2016, y = ~State, x = ~Obesity,
          yaxis = list(title = "US States"), barmode = 'stack')
 
 
-#put on report - fix labels 
+# put on report - fix labels 
 plot.e <- ggplot(nutr.data, aes(x = LocationDesc, y = Data_Value, fill = Class)) + 
   geom_bar(subset = .(Class == "Obesity / Weight Status"), stat = "identity") + 
   geom_bar(subset = .(Class == "Physical Activity"), stat = "identity") + 
@@ -42,11 +44,11 @@ high.obes <- nutr.2016[which.max(nutr.2016$Obesity),]$StateFull
 # lowest obesity
 low.obes <- nutr.2016[which.min(nutr.2016$Obesity),]$StateFull
 
-# highest physical activity
-high.pa <- nutr.2016[which.max(nutr.2016$PhysicalActivity),]$StateFull
-
 # lowest physical activity
-low.pa <- nutr.2016[which.min(nutr.2016$PhysicalActivity),]$StateFull
+low.pa <- nutr.2016[which.max(nutr.2016$PhysicalActivity),]$StateFull
+
+# highest physical activity
+high.pa <- nutr.2016[which.min(nutr.2016$PhysicalActivity),]$StateFull
 
 # average pa 
 mean.pa <- mean(nutr.2016$PhysicalActivity)
@@ -55,7 +57,7 @@ mean.pa <- mean(nutr.2016$PhysicalActivity)
 mean.ob <- mean(nutr.2016$Obesity) 
 
 # priority states (check values of unhealthy)
-prior.data <- filter(nutr.2016, Obesity >= 34 | PhysicalActivity <= 17)
+prior.data <- filter(nutr.2016, Obesity >= 34 | PhysicalActivity >= 29)
 
 # indepth analysis - select function - only for priority or all?
 # show trend over the years from 2011 - 2016 by selecting state
