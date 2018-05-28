@@ -23,7 +23,9 @@ fm.mean <- aggregate(fm.data[-1], list(fm.data$State), mean, na.rm=T)
 
 # joining the datasets
 buy.data <- left_join(stores.mean, fm.mean, by = "Group.1")
-colnames(buy.data)[1] <- "State"
+colnames(buy.data) <- c("State", "Grocery Stores 2009", "Grocery Stores 2014",
+                       "Supercenters 2009", "Supercenters 2014", "Convenience Stores 2009",
+                       "Convenience Stores 2014", "Farmers Market 2009", "Farmers Market 2014")
 
 # selecting data for 2009
 buy.old <- select(buy.data, ends_with("09"))
@@ -35,22 +37,24 @@ buy.new <- select(buy.data, -ends_with("09"))
 buy.new <- gather(buy.new, "Type", "Value", -1)
 
 
-state.y.plot <- function(State) {
-  state.old <- buy.old[which(buy.old$State == State),]
-  state.new <- buy.new[which(buy.new$State == State),]
+state.y.plot <- function(State, Year) {
+  if (Year == "Past") {
+    state.data <- buy.old[which(buy.old$State == State),]
+    col <- 'rgb(50,205,50)'
+    
+  } else {
+    state.data <- buy.new[which(buy.new$State == State),]
+    col <- 'rgb(158,202,225)'
+  }
   
-  plot.o- plot_ly(state.old, x = ~Type, y = ~Value, type = 'bar') %>% 
-             layout(xaxis = list(tickmode = "array",
-                    ticktext = c("Convenience Stores", "Farmers Market", "Grocery Stores", "Supercenters")))
+  plot.out <- plot_ly(state.data, x = ~Type, y = ~Value, type = 'bar',
+                      marker = list(color = col))%>% 
+              layout(title = ~paste("Comparison of Accessibility by Different Types of Stores"),
+                     yaxis = list(title = '# Per 1,000 Pop.'), 
+                     xaxis = list(title = 'Types of Store'))
   
-  plot.new<- plot_ly(state.new, x = ~Type, y = ~Value, 
-                     type = 'bar') 
   
-   plot.out <- subplot(plot.old, plot.new) %>% 
-             layout(title = ~paste("Comparison of Accessibility by Different Types of Stores"),
-                 yaxis = list(title = '# Per 1,000 Pop.'))
-  
-  return(plot.o)
+  return(plot.out)
 }
 
 
