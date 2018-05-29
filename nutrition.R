@@ -40,7 +40,19 @@ plot.b <- plot_ly(nutr.2016, x = ~State, y = ~Obesity, type = 'scatter',
 
 
 # for report analysis
-plot.e <- ggplot(nutr.data, aes(x = LocationDesc, y = Data_Value, fill = Class)) + 
+rep.nutr.data <- nutr.data
+
+for (i in 1:nrow(rep.nutr.data)) {
+  if(rep.nutr.data$Class[i] != "Physical Activity") {
+    rep.nutr.data$Data_Value[i] <- rep.nutr.data$Data_Value[i] * -1
+  }
+}
+
+rep.nutr.data <- with(rep.nutr.data, rep.nutr.data[order(Class,Data_Value),])
+
+rep.nutr.data <- rep.nutr.data[order(rep.nutr.data$Data_Value),]
+
+plot.e <- ggplot(rep.nutr.data, aes(x = LocationDesc, y = Data_Value, fill = Class)) + 
   geom_bar(subset = .(Class == "Obesity / Weight Status"), stat = "identity") + 
   geom_bar(subset = .(Class == "Physical Activity"), stat = "identity") + 
   scale_y_continuous(breaks = seq(-45, 45, 5)) +
