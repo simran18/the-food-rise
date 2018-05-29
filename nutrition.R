@@ -30,7 +30,7 @@ plot.a <- plot_ly(nutr.2016, y = ~State, x = ~Obesity,
          title = "State-Wise Comparison of Obesity & Physical Inactivity")
 
 plot.b <- plot_ly(nutr.2016, x = ~State, y = ~Obesity, type = 'scatter',
-                  mode = 'marker', color = ~PhysicalInactivity, size = ~Obesity, hoverinfo = 'text',
+                  mode = 'marker', color = ~PhysicalInactivity, size = ~Obesity,
                   text = ~paste(StateFull,
                                 "</br>", "Physical Inactivity: ", PhysicalInactivity, "%",
                                 "</br> Obesity: ", Obesity, "%")) %>% 
