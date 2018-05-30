@@ -9,6 +9,25 @@ shinyServer(function(input, output, session) {
     plot.insec
   })
   
+  output$img <- renderImage({
+    
+    return(list(src = "food_security.png",
+      contentType = "image/png",
+      width = 500,
+      alt = "Food security"
+    ))
+  }, deleteFile = FALSE)
+  
+  output$img2 <- renderImage({
+    
+    return(list(src = "data-overview.png",
+                contentType = "image/png",
+                width = 1000,
+                height = 350,
+                alt = "Food security"
+    ))
+  }, deleteFile = FALSE)
+  
   #############
   #EXPENDITURE#
   #############
@@ -70,32 +89,108 @@ shinyServer(function(input, output, session) {
     state.y.plot(input$b.plot.state, input$b.plot.year)
  })
   
-  ########
-  #REPORT#
-  ########
-  
-  # K means 
-  output$image <- renderImage({
-    return(list(
-        src = "venn.png",
-        contentType = "image/png",
-        alt = "Venn"
-      ))
-    }, deleteFile = FALSE)
-  
-  output$heatmap <- renderPlot({
-    states_heatmap()
-  })
-  
-  output$diffk <- renderPlot({
-    diff_k()
-  })
+ ########
+ #K means#
+ ########
+ 
+ # K means 
+ output$image <- renderImage({
+   return(list(
+     src = "venn.png",
+     contentType = "image/png",
+     alt = "Venn"
+   ))
+ }, deleteFile = FALSE)
+ 
+ output$heatmap <- renderPlot({
+   states_heatmap()
+ })
+ 
+ output$corr <- renderPlot({
+   corr_chart()
+ })
+ 
+ output$varclust <- renderPlot({
+   variables_cluster()
+ })
+ 
+ output$diffk <- renderPlot({
+   diff_k(input$meth)
+ })
+ 
+ output$km <- renderPlot({
+   interactive_kmeans(input$k)
+ })
+ 
+ output$final_result <- renderPlot({
+   final_kmeans()
+ })
 
-  output$km <- renderPlot({
-    interactive_kmeans(input$k)
-  })
+
+##########
+# Report #
+##########
+output$expend1 <- renderImage({
   
-  output$final_result <- renderPlot({
-    final_kmeans()
-  })
+  return(list(src = "expend1.png",
+              contentType = "image/png",
+              width = 750,
+              alt = "Expenditure"
+  ))
+}, deleteFile = FALSE)
+
+output$nutrition1 <- renderImage({
+  
+  return(list(src = "nutrition1.png",
+              contentType = "image/png",
+              width = 750,
+              alt = "Nutrition Overview 1"
+  ))
+}, deleteFile = FALSE)
+
+output$nutrition2 <- renderImage({
+  
+  return(list(src = "nutrition2.png",
+              contentType = "image/png",
+              width = 500,
+              alt = "Nutrition Overview 2"
+  ))
+}, deleteFile = FALSE)
+
+output$access1 <- renderImage({
+  
+  return(list(src = "access1.png",
+              contentType = "image/png",
+              width = 500,
+              alt = "Accessibility Overview"
+  ))
+}, deleteFile = FALSE)
+
+output$CT <- renderImage({
+  
+  return(list(src = "CT.png",
+              contentType = "image/png",
+              width = 750,
+              alt = "Conneticut"
+  ))
+}, deleteFile = FALSE)
+
+output$MA <- renderImage({
+  
+  return(list(src = "MA.png",
+              contentType = "image/png",
+              width = 750,
+              alt = "MA"
+  ))
+}, deleteFile = FALSE)
+
+output$NJ <- renderImage({
+  
+  return(list(src = "NJ.png",
+              contentType = "image/png",
+              width = 750,
+              alt = "NJ"
+  ))
+}, deleteFile = FALSE)
+
 })

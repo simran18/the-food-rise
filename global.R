@@ -10,6 +10,11 @@ require(cluster)||install.packages("cluster")
 library(cluster)
 require(readxl)||install.packages("readxl")
 library(readxl)
+require(ClustOfVar)||install.packages("ClustOfVar")
+library(ClustOfVar)
+require(PerformanceAnalytics)||install.packages("PerformanceAnalytics")
+library(PerformanceAnalytics)
+
 
 
 
@@ -23,5 +28,5 @@ source("nutrition.R")
 source("accessibility.R")
 source("buy-access.R")
 # K means / Predictive Clustering
-# source("kmeans.R")
+source("kmeans.R")
 

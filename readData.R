@@ -9,8 +9,8 @@ library(tidyr)
 
 #EXPENDITURE
 
-#Region-State level data for
-#Percent change in expenditure in each category from 2015-2016
+# Region-State level data for
+# Percent change in expenditure in each category from 2015-2016
 exp_data <- read_excel("./data/expenditure-data.xlsx",sheet = "Table 2 pg 2")
 exp_data <- na.omit(exp_data)
 exp_data<- exp_data%>%
