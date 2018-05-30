@@ -2,7 +2,11 @@
 # KMEANS ANALYSIS 
 ######
 
+<<<<<<< HEAD
 #load data in
+=======
+# load data 
+>>>>>>> simran
 source('readData.R')
 
 library(dplyr)

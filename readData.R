@@ -59,10 +59,17 @@ colnames(county_farmer_access)<- c("FIPS","State","County","2009","2016")
 #Access data prep
 tmpfarmaccess <- county_farmer_access%>%
   group_by(State)%>%
+<<<<<<< HEAD
   summarize(farmacc = mean(`2016`))
 tmplowaccess <- county_low_access%>%
   group_by(State)%>%
   summarize(lowacc = mean(`2015`))
+=======
+  summarize(farmacc = mean(`2016`, na.rm = T))
+tmplowaccess <- county_low_access%>%
+  group_by(State)%>%
+  summarize(lowacc = mean(`2015`, na.rm = T))
+>>>>>>> simran
 
 finalaccess <- left_join(tmpfarmaccess,tmplowaccess,by='State')
 
@@ -89,4 +96,8 @@ finalcombined$`Food Services` <- as.numeric(finalcombined$`Food Services`)
 
 #Final Number of States in Analysis is 39
 #STATES EXCLUDED DUE TO MISSING DATA - 
+<<<<<<< HEAD
 #Georgia, Illinois, Indiana, Kentucky, Michigan, Mississippi, North Carolina, South Dakota, Tennessee, Texas, Virginia, Wisconsin
+=======
+#Georgia, Illinois, Indiana, Kentucky, Michigan, Mississippi, North Carolina, South Dakota, Tennessee, Texas, Virginia, Wisconsin
+>>>>>>> simran
