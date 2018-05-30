@@ -15,7 +15,7 @@ nutr.data <- filter(obes.pa.data, YearStart == 2016 &
 
 
 
-# making the data wide for analysis
+# making the data for state wide for analysis
 nutr.2016 <- spread(data = nutr.data, key = Class, value = Data_Value)
 colnames(nutr.2016) <- c("State", "StateFull", "Obesity", "PhysicalInactivity")
 
@@ -57,7 +57,7 @@ plot.e <- ggplot(rep.nutr.data, aes(x = LocationDesc, y = Data_Value, fill = Cla
   geom_bar(subset = .(Class == "Physical Activity"), stat = "identity") + 
   scale_y_continuous(breaks = seq(-45, 45, 5)) +
   coord_flip() + 
-  labs (x = "Percentage Value", y = "US States",
+  labs (y = "Percentage Value", x = "US States",
         title = "State-Wise Comparison of Obesity & Physical Inactivity")
   scale_fill_brewer(palette = "Set1") 
   
@@ -95,12 +95,19 @@ yearly.data <- filter(obes.pa.data, Total == "Total") %>%
 
 yearly.data <- yearly.data[order(yearly.data$YearStart),]
 
-# plot all obesity over year for each state
+# calculating trend for both pa and obesity over the years
 obes.pa.y <- spread(data = yearly.data, key = Class, value = Data_Value)
-colnames(obes.pa.y) <- c("Year", "State", "Obesity", "PhysicalInactivity")
+colnames(obes.pa.y) <- c("Year", "StateFull", "Obesity", "PhysicalInactivity")
 
-# filter for state?
-plot.ob <- plot_ly(obes.pa.y, x = ~Year, y = ~Obesity, color = ~State,
+prior.obes.pa <- left_join(prior.data, obes.pa.y, by = "StateFull")
+prior.obes.pa$Obesity.x <- NULL
+prior.obes.pa$PhysicalInactivity.x <- NULL
+prior.obes.pa$State <- NULL
+
+colnames(prior.obes.pa) <- c("State", "Year", "Obesity", "PhysicalInactivity")
+# plot all obesity over year for each state
+
+plot.ob <- plot_ly(prior.obes.pa, x = ~Year, y = ~Obesity, color = ~State,
                    type = 'scatter', mode = 'lines+markers') %>% 
           layout(title = ~paste("Trend of Obesity Over The Years"),
                  xaxis = list(title = "Years"),
@@ -108,7 +115,7 @@ plot.ob <- plot_ly(obes.pa.y, x = ~Year, y = ~Obesity, color = ~State,
 
 
 # plot all physical inactivity over years for each state
-plot.pa <- plot_ly(obes.pa.y, x = ~Year, y = ~PhysicalInactivity, color = ~State,
+plot.pa <- plot_ly(prior.obes.pa, x = ~Year, y = ~PhysicalInactivity, color = ~State,
                    type = 'scatter', mode = 'lines+markers') %>% 
   layout(title = ~paste("Trend of Physical Inactivity Over The Years"),
          xaxis = list(title = "Years"),
@@ -175,7 +182,7 @@ indepth.plot <- function(State, Class, Year, Type) {
 # Top state for Physical Inactivity is Arkansas in 2016
 # add state.plot("Arkansas")
 # This plot shows that as obesity increases, Physical Inactivity is also relatively high. Even though
-# the population of this state has been physically inactive in the past years (comparatively), in 2016 it 
+# the population of this state has been more physically inactive in the past years (comparatively), in 2016 it 
 # had it's highest obesity rates as well. This graph shows that there is some relation at the least between
 # these two values. 
 

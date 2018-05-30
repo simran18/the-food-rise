@@ -11,6 +11,6 @@ colnames(insec.data) <- c("State", "2000-2002", "2007-2009", "2010-2012")
 
 plot.insec <-  plot_ly(insec.data, x = ~State, y = ~insec.data$`2010-2012`, 
                        type = 'bar', marker = list(color = 'rgb(255, 0, 0'))%>% 
-              layout(title = "Food Insecurity in the US from 2010 to 2012",
+              layout(title = "Food Insecurity in the US in Recent Times",
                      yaxis = list(title = 'Household % average'), 
                      xaxis = list(title = 'US States'))
